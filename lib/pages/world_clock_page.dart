@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../models/city.dart';
 import '../widgets/clock_card.dart';
 
@@ -43,50 +45,72 @@ class _WorldClockPageState extends State<WorldClockPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.german ? 'Weltuhr' : 'World Clock',
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-          const SizedBox(height: 20),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              int columns = 1;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final mobile = constraints.maxWidth < 600;
 
-              if (constraints.maxWidth >= 1000) {
-                columns = 3;
-              } else if (constraints.maxWidth >= 560) {
-                columns = 2;
-              }
+        return SingleChildScrollView(
+          padding: EdgeInsets.all(mobile ? 18 : 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.german ? 'Weltuhr' : 'World Clock',
+                style: const TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                widget.german
+                    ? 'Aktuelle Uhrzeit in internationalen Städten'
+                    : 'Current time in major international cities',
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.60),
+                ),
+              ),
+              const SizedBox(height: 24),
+              LayoutBuilder(
+                builder: (context, gridConstraints) {
+                  int columns = 1;
 
-              const gap = 16.0;
+                  if (gridConstraints.maxWidth >= 1050) {
+                    columns = 3;
+                  } else if (gridConstraints.maxWidth >= 620) {
+                    columns = 2;
+                  }
 
-              final cardWidth =
-                  (constraints.maxWidth - gap * (columns - 1)) /
+                  const gap = 14.0;
+
+                  final cardWidth = (gridConstraints.maxWidth -
+                          gap * (columns - 1)) /
                       columns;
 
-              return Wrap(
-                spacing: gap,
-                runSpacing: gap,
-                children: majorCities.map((city) {
-                  return SizedBox(
-                    width: cardWidth,
-                    child: ClockCard(
-                      city: city,
-                      german: widget.german,
-                      currentTime: currentTime,
-                    ),
+                  return Wrap(
+                    spacing: gap,
+                    runSpacing: gap,
+                    children: majorCities.map((city) {
+                      return SizedBox(
+                        width: cardWidth,
+                        child: ClockCard(
+                          city: city,
+                          german: widget.german,
+                          currentTime: currentTime,
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
-              );
-            },
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

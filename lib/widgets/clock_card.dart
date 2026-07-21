@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/city.dart';
 
 class ClockCard extends StatelessWidget {
@@ -15,45 +16,98 @@ class ClockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cityTime = currentTime
-        .toUtc()
-        .add(Duration(hours: city.utcOffset));
+    final cityTime = currentTime.toUtc().add(
+          Duration(hours: city.utcOffset),
+        );
 
-    final time =
-        '${twoDigits(cityTime.hour)}:'
+    final time = '${twoDigits(cityTime.hour)}:'
         '${twoDigits(cityTime.minute)}:'
         '${twoDigits(cityTime.second)}';
 
+    final offset = city.utcOffset >= 0
+        ? 'UTC+${city.utcOffset}'
+        : 'UTC${city.utcOffset}';
+
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(
-                    city.countryName(german),
-                    style: Theme.of(context).textTheme.titleMedium,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.schedule_rounded,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                 ),
-                const Icon(
-                  Icons.circle,
-                  size: 12,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        city.countryName(german),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        city.cityName(german),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.55),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    offset,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 28),
             FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
               child: Text(
                 time,
-                style: Theme.of(context).textTheme.displaySmall,
+                style: const TextStyle(
+                  fontSize: 38,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -1.2,
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(city.cityName(german)),
           ],
         ),
       ),
