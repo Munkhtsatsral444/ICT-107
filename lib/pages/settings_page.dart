@@ -65,8 +65,8 @@ class SettingsPage extends StatelessWidget {
                     icon: Icons.dark_mode_rounded,
                     title: translate('Dark mode', 'Dunkles Design'),
                     subtitle: translate(
-                      'Use a dark black and grey theme',
-                      'Dunkles Schwarz-Grau-Design verwenden',
+                      'Switch to dark mode',
+                      'Zum dunklen Modus wechseln',
                     ),
                     value: darkMode,
                     onChanged: onThemeChanged,

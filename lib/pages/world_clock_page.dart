@@ -66,7 +66,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
               Text(
                 widget.german
                     ? 'Aktuelle Uhrzeit in internationalen Städten'
-                    : 'Current time in major international cities',
+                    : 'Current time in international cities',
                 style: TextStyle(
                   color: Theme.of(context)
                       .colorScheme

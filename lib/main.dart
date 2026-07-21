@@ -81,13 +81,7 @@ class _MeetingModeAppState extends State<MeetingModeApp> {
                         ),
                         child: Column(
                           children: [
-                            const SizedBox(height: 24),
-                            const Icon(
-                              Icons.schedule_rounded,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                            const SizedBox(height: 42),
+                          const SizedBox(height: 40),
                             ...List.generate(labels.length, (index) {
                               final selected = selectedIndex == index;
 
@@ -212,32 +206,63 @@ class _MeetingModeAppState extends State<MeetingModeApp> {
     );
   }
 
-  ThemeData createTheme(Brightness brightness) {
-    final dark = brightness == Brightness.dark;
+ThemeData createTheme(Brightness brightness) {
+  final dark = brightness == Brightness.dark;
 
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: Colors.black,
-      brightness: brightness,
-    ).copyWith(
-      surface: dark ? const Color(0xff171717) : Colors.white,
-      surfaceContainerHighest:
-          dark ? const Color(0xff252525) : const Color(0xfff4f4f6),
-    );
+  final colorScheme = ColorScheme.fromSeed(
+    seedColor: Colors.black,
+    brightness: brightness,
+  ).copyWith(
+    primary: dark ? Colors.white : Colors.black,
+    onPrimary: dark ? Colors.black : Colors.white,
+    secondary: dark ? Colors.white : Colors.black,
+    onSecondary: dark ? Colors.black : Colors.white,
+    tertiary: dark ? Colors.white : Colors.black,
+    onTertiary: dark ? Colors.black : Colors.white,
+    surface: dark ? const Color(0xff171717) : Colors.white,
+    onSurface: dark ? Colors.white : Colors.black,
+    surfaceContainerHighest:
+        dark ? const Color(0xff252525) : const Color(0xfff4f4f6),
+    outline: dark ? Colors.white38 : Colors.black38,
+    surfaceTint: Colors.transparent,
+  );
 
-    return ThemeData(
-      useMaterial3: true,
-      brightness: brightness,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor:
-          dark ? const Color(0xff0d0d0d) : const Color(0xffececef),
-      cardTheme: CardThemeData(
-        elevation: 0,
-        margin: EdgeInsets.zero,
-        color: colorScheme.surfaceContainerHighest,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+  return ThemeData(
+    useMaterial3: true,
+    brightness: brightness,
+    colorScheme: colorScheme,
+    scaffoldBackgroundColor:
+        dark ? const Color(0xff0d0d0d) : const Color(0xffececef),
+
+    cardTheme: CardThemeData(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: colorScheme.surfaceContainerHighest,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
       ),
-    );
-  }
+    ),
+
+    switchTheme: SwitchThemeData(
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return dark ? Colors.white : Colors.black;
+        }
+
+        return dark ? Colors.white24 : Colors.black26;
+      }),
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return dark ? Colors.black : Colors.white;
+        }
+
+        return dark ? Colors.white70 : Colors.white;
+      }),
+      trackOutlineColor: const WidgetStatePropertyAll(
+        Colors.transparent,
+      ),
+    ),
+  );
+}
 }
