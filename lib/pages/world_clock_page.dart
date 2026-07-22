@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 import '../models/city.dart';
 import '../widgets/clock_card.dart';
@@ -56,10 +58,10 @@ class _WorldClockPageState extends State<WorldClockPage> {
             children: [
               Text(
                 widget.german ? 'Weltuhr' : 'World Clock',
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.8,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -1,
                 ),
               ),
               const SizedBox(height: 6),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class SettingsPage extends StatelessWidget {
   final bool german;
@@ -29,10 +31,10 @@ class SettingsPage extends StatelessWidget {
           children: [
             Text(
               translate('Settings', 'Einstellungen'),
-              style: const TextStyle(
-                fontSize: 34,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 40,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -1,
               ),
             ),
             const SizedBox(height: 6),
