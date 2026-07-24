@@ -1,61 +1,69 @@
 class City {
-  final String cityEnglish;
-  final String cityGerman;
-  final String countryEnglish;
-  final String countryGerman;
-  final int utcOffset;
+  final String englishCountry;
+  final String germanCountry;
+  final String englishCity;
+  final String germanCity;
+  final String timeZoneId;
 
   const City({
-    required this.cityEnglish,
-    required this.cityGerman,
-    required this.countryEnglish,
-    required this.countryGerman,
-    required this.utcOffset,
+    required this.englishCountry,
+    required this.germanCountry,
+    required this.englishCity,
+    required this.germanCity,
+    required this.timeZoneId,
   });
 
-  String cityName(bool german) {
-    return german ? cityGerman : cityEnglish;
+  String countryName(bool german) {
+    return german ? germanCountry : englishCountry;
   }
 
-  String countryName(bool german) {
-    return german ? countryGerman : countryEnglish;
+  String cityName(bool german) {
+    return german ? germanCity : englishCity;
   }
 }
 
-const majorCities = [
+const List<City> majorCities = [
   City(
-    cityEnglish: 'Sydney',
-    cityGerman: 'Sydney',
-    countryEnglish: 'Australia',
-    countryGerman: 'Australien',
-    utcOffset: 10,
+    englishCountry: 'Australia',
+    germanCountry: 'Australien',
+    englishCity: 'Sydney',
+    germanCity: 'Sydney',
+    timeZoneId: 'Australia/Sydney',
   ),
   City(
-    cityEnglish: 'Berlin',
-    cityGerman: 'Berlin',
-    countryEnglish: 'Germany',
-    countryGerman: 'Deutschland',
-    utcOffset: 2,
+    englishCountry: 'Australia',
+    germanCountry: 'Australien',
+    englishCity: 'Perth',
+    germanCity: 'Perth',
+    timeZoneId: 'Australia/Perth',
   ),
   City(
-    cityEnglish: 'London',
-    cityGerman: 'London',
-    countryEnglish: 'United Kingdom',
-    countryGerman: 'Vereinigtes Königreich',
-    utcOffset: 1,
+    englishCountry: 'United Kingdom',
+    germanCountry: 'Vereinigtes Königreich',
+    englishCity: 'London',
+    germanCity: 'London',
+    timeZoneId: 'Europe/London',
   ),
   City(
-    cityEnglish: 'New York',
-    cityGerman: 'New York',
-    countryEnglish: 'United States',
-    countryGerman: 'Vereinigte Staaten',
-    utcOffset: -4,
+    englishCountry: 'United States',
+    germanCountry: 'Vereinigte Staaten',
+    englishCity: 'New York',
+    germanCity: 'New York',
+    timeZoneId: 'America/New_York',
   ),
   City(
-    cityEnglish: 'Tokyo',
-    cityGerman: 'Tokio',
-    countryEnglish: 'Japan',
-    countryGerman: 'Japan',
-    utcOffset: 9,
+    englishCountry: 'Japan',
+    germanCountry: 'Japan',
+    englishCity: 'Tokyo',
+    germanCity: 'Tokio',
+    timeZoneId: 'Asia/Tokyo',
   ),
+  City(
+    englishCountry: 'Germany',
+    germanCountry: 'Deutschland',
+    englishCity: 'Berlin',
+    germanCity: 'Berlin',
+    timeZoneId: 'Europe/Berlin',
+  ),
+
 ];

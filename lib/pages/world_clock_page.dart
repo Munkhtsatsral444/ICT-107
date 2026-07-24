@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../models/city.dart';
 import '../widgets/clock_card.dart';
 
@@ -16,12 +15,15 @@ class WorldClockPage extends StatefulWidget {
   });
 
   @override
-  State<WorldClockPage> createState() => _WorldClockPageState();
+  State<WorldClockPage> createState() {
+    return _WorldClockPageState();
+  }
 }
 
-class _WorldClockPageState extends State<WorldClockPage> {
+class _WorldClockPageState
+    extends State<WorldClockPage> {
   DateTime currentTime = DateTime.now();
-  late Timer timer;
+  Timer? timer;
 
   @override
   void initState() {
@@ -41,7 +43,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -49,16 +51,23 @@ class _WorldClockPageState extends State<WorldClockPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final mobile = constraints.maxWidth < 600;
+        final mobile =
+            constraints.maxWidth < 600;
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(mobile ? 18 : 28),
+          padding: EdgeInsets.all(
+            mobile ? 18 : 28,
+          ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               Text(
-                widget.german ? 'Weltuhr' : 'World Clock',
-                style: GoogleFonts.playfairDisplay(
+                widget.german
+                    ? 'Weltuhr'
+                    : 'World Clock',
+                style:
+                    GoogleFonts.playfairDisplay(
                   fontSize: 40,
                   fontWeight: FontWeight.w600,
                   letterSpacing: -1,
@@ -78,34 +87,43 @@ class _WorldClockPageState extends State<WorldClockPage> {
               ),
               const SizedBox(height: 24),
               LayoutBuilder(
-                builder: (context, gridConstraints) {
+                builder:
+                    (context, gridConstraints) {
                   int columns = 1;
 
-                  if (gridConstraints.maxWidth >= 1050) {
+                  if (gridConstraints.maxWidth >=
+                      1050) {
                     columns = 3;
-                  } else if (gridConstraints.maxWidth >= 620) {
+                  } else if (gridConstraints
+                          .maxWidth >=
+                      620) {
                     columns = 2;
                   }
 
                   const gap = 14.0;
 
-                  final cardWidth = (gridConstraints.maxWidth -
-                          gap * (columns - 1)) /
-                      columns;
+                  final cardWidth =
+                      (gridConstraints.maxWidth -
+                              gap * (columns - 1)) /
+                          columns;
 
                   return Wrap(
                     spacing: gap,
                     runSpacing: gap,
-                    children: majorCities.map((city) {
-                      return SizedBox(
-                        width: cardWidth,
-                        child: ClockCard(
-                          city: city,
-                          german: widget.german,
-                          currentTime: currentTime,
-                        ),
-                      );
-                    }).toList(),
+                    children: majorCities.map(
+                      (city) {
+                        return SizedBox(
+                          width: cardWidth,
+                          child: ClockCard(
+                            city: city,
+                            german:
+                                widget.german,
+                            currentTime:
+                                currentTime,
+                          ),
+                        );
+                      },
+                    ).toList(),
                   );
                 },
               ),

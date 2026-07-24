@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timezone/timezone.dart' as timezone;
 
 import '../models/city.dart';
 
@@ -16,17 +17,21 @@ class ClockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cityTime = currentTime.toUtc().add(
-          Duration(hours: city.utcOffset),
-        );
+    final location = timezone.getLocation(city.timeZoneId);
 
-    final time = '${twoDigits(cityTime.hour)}:'
+    final cityTime = timezone.TZDateTime.from(
+      currentTime,
+      location,
+    );
+
+    final time =
+        '${twoDigits(cityTime.hour)}:'
         '${twoDigits(cityTime.minute)}:'
         '${twoDigits(cityTime.second)}';
 
-    final offset = city.utcOffset >= 0
-        ? 'UTC+${city.utcOffset}'
-        : 'UTC${city.utcOffset}';
+    final offset = formatOffset(
+      cityTime.timeZoneOffset,
+    );
 
     return Card(
       child: Padding(
@@ -40,19 +45,24 @@ class ClockCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.schedule_rounded,
                     size: 20,
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surface,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
                       Text(
                         city.countryName(german),
@@ -82,7 +92,9 @@ class ClockCard extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surface,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -113,6 +125,22 @@ class ClockCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String formatOffset(Duration duration) {
+  final totalMinutes = duration.inMinutes;
+  final negative = totalMinutes < 0;
+  final absoluteMinutes = totalMinutes.abs();
+
+  final hours = absoluteMinutes ~/ 60;
+  final minutes = absoluteMinutes % 60;
+  final sign = negative ? '-' : '+';
+
+  if (minutes == 0) {
+    return 'UTC$sign$hours';
+  }
+
+  return 'UTC$sign$hours:${twoDigits(minutes)}';
 }
 
 String twoDigits(int number) {
