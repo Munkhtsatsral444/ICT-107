@@ -204,19 +204,29 @@ class NotificationService {
       timezone.local,
     );
 
-    const notificationDetails = NotificationDetails(
+    final vibrate = meeting.mode == 'vibrate';
+
+    final notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_reminder_channel',
-        'Meeting Reminders',
+        vibrate
+            ? 'meeting_vibrate_channel_v2'
+            : 'meeting_silent_channel_v2',
+        vibrate
+            ? 'Vibrate Meeting Reminders'
+            : 'Silent Meeting Reminders',
         channelDescription:
             'Notifications before scheduled meetings',
         importance: Importance.high,
         priority: Priority.high,
-        playSound: true,
-        enableVibration: true,
+        playSound: false,
+        enableVibration: vibrate,
       ),
-      iOS: DarwinNotificationDetails(),
-      macOS: DarwinNotificationDetails(),
+      iOS: const DarwinNotificationDetails(
+        presentSound: false,
+      ),
+      macOS: const DarwinNotificationDetails(
+        presentSound: false,
+      ),
     );
 
     try {
