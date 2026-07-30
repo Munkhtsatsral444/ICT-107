@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/models/meeting.dart';
-
+import 'package:meeting_mode/models/meeting.dart';
 void main() {
   test(
     'Meeting converts to JSON and back',

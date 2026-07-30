@@ -50,7 +50,9 @@ class SoundService {
         RingerModeStatus.silent,
       );
     } on PlatformException {
+      // Ignore unsupported sound mode errors.
     } catch (_) {
+      // Ignore other sound mode errors.
     }
   }
 
@@ -69,7 +71,9 @@ class SoundService {
         );
       }
     } on PlatformException {
+      // Ignore unsupported sound mode errors.
     } catch (_) {
+      // Ignore other sound mode errors.
     }
   }
 }
