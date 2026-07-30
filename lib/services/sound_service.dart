@@ -46,8 +46,12 @@ class SoundService {
         return;
       }
 
+      final targetMode = mode == 'vibrate'
+          ? RingerModeStatus.vibrate
+          : RingerModeStatus.silent;
+
       await SoundMode.setSoundMode(
-        RingerModeStatus.silent,
+        targetMode,
       );
     } on PlatformException {
       // Ignore unsupported sound mode errors.

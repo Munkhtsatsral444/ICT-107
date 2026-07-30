@@ -10,6 +10,7 @@ import 'pages/home_page.dart';
 import 'pages/schedule_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/world_clock_page.dart';
+import 'services/alarm_service.dart';
 import 'services/notification_service.dart';
 import 'services/sound_service.dart';
 import 'services/storage_service.dart';
@@ -119,6 +120,12 @@ class _MeetingModeAppState
       german: german,
     );
 
+    for (final meeting in meetings) {
+      await AlarmService.scheduleMeeting(
+        meeting,
+      );
+    }
+
     await checkMeetingMode();
   }
 
@@ -182,6 +189,9 @@ class _MeetingModeAppState
       meeting: meeting,
       german: german,
     );
+    await AlarmService.scheduleMeeting(
+      meeting,
+    );
 
     await checkMeetingMode();
   }
@@ -202,6 +212,10 @@ class _MeetingModeAppState
     );
 
     await NotificationService.cancelMeeting(
+      meeting.id,
+    );
+
+    await AlarmService.cancelMeeting(
       meeting.id,
     );
 
@@ -243,10 +257,18 @@ class _MeetingModeAppState
       meeting.id,
     );
 
+    await AlarmService.cancelMeeting(
+      meeting.id,
+    );
+
     if (enabled) {
       await NotificationService.scheduleMeeting(
         meeting: updatedMeeting,
         german: german,
+      );
+
+      await AlarmService.scheduleMeeting(
+        updatedMeeting,
       );
     }
 

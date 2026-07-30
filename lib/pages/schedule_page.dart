@@ -33,8 +33,7 @@ class SchedulePage extends StatefulWidget {
   }
 }
 
-class _SchedulePageState
-    extends State<SchedulePage> {
+class _SchedulePageState extends State<SchedulePage> {
   final TextEditingController titleController =
       TextEditingController();
 
@@ -42,14 +41,13 @@ class _SchedulePageState
   TimeOfDay selectedTime = TimeOfDay.now();
 
   int durationMinutes = 60;
+  String selectedMode = 'silent';
 
   String translate(
     String english,
     String deutsch,
   ) {
-    return widget.german
-        ? deutsch
-        : english;
+    return widget.german ? deutsch : english;
   }
 
   @override
@@ -98,7 +96,6 @@ class _SchedulePageState
           'Bitte geben Sie einen Meeting-Titel ein',
         ),
       );
-
       return;
     }
 
@@ -117,7 +114,6 @@ class _SchedulePageState
           'Bitte wählen Sie ein zukünftiges Datum und eine zukünftige Uhrzeit',
         ),
       );
-
       return;
     }
 
@@ -132,7 +128,7 @@ class _SchedulePageState
       endTime: startTime.add(
         Duration(minutes: durationMinutes),
       ),
-      mode: 'silent',
+      mode: selectedMode,
     );
 
     await widget.onAddMeeting(meeting);
@@ -147,6 +143,7 @@ class _SchedulePageState
       selectedDate = DateTime.now();
       selectedTime = TimeOfDay.now();
       durationMinutes = 60;
+      selectedMode = 'silent';
     });
 
     showMessage(
@@ -175,8 +172,7 @@ class _SchedulePageState
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final mobile =
-            constraints.maxWidth < 600;
+        final mobile = constraints.maxWidth < 600;
 
         final sortedMeetings = [
           ...widget.meetings,
@@ -206,133 +202,93 @@ class _SchedulePageState
                       'Add Meeting',
                       'Meeting hinzufügen',
                     ),
-                    style: GoogleFonts
-                        .playfairDisplay(
-                      fontSize: 40,
-                      fontWeight:
-                          FontWeight.w600,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: mobile ? 34 : 40,
+                      fontWeight: FontWeight.w600,
                       letterSpacing: -1,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     translate(
-                      'Create a meeting schedule with silent mode',
-                      'Erstellen Sie einen Meeting-Zeitplan mit Lautlosmodus',
+                      'Create a meeting with silent or vibration mode',
+                      'Erstellen Sie ein Meeting mit Lautlos- oder Vibrationsmodus',
                     ),
                     style: TextStyle(
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withValues(
-                            alpha: 0.60,
-                          ),
+                          .withValues(alpha: 0.60),
                     ),
                   ),
                   const SizedBox(height: 22),
+
+                  // Meeting form
                   Card(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.all(
-                        24,
-                      ),
+                      padding: const EdgeInsets.all(24),
                       child: Column(
                         crossAxisAlignment:
-                            CrossAxisAlignment
-                                .stretch,
+                            CrossAxisAlignment.stretch,
                         children: [
                           TextField(
-                            controller:
-                                titleController,
+                            controller: titleController,
                             textInputAction:
-                                TextInputAction
-                                    .done,
-                            decoration:
-                                InputDecoration(
+                                TextInputAction.done,
+                            decoration: InputDecoration(
                               labelText: translate(
                                 'Meeting title',
                                 'Meeting-Titel',
                               ),
-                              prefixIcon:
-                                  const Icon(
-                                Icons
-                                    .edit_calendar_outlined,
+                              prefixIcon: const Icon(
+                                Icons.edit_calendar_outlined,
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const SizedBox(height: 16),
+
                           Wrap(
                             spacing: 12,
                             runSpacing: 12,
                             children: [
+                              // Date
                               OutlinedButton.icon(
                                 onPressed: chooseDate,
                                 icon: const Icon(
                                   Icons.calendar_today_outlined,
                                 ),
                                 label: Text(
-                                  formatMeetingDate(selectedDate),
+                                  formatMeetingDate(
+                                    selectedDate,
+                                  ),
                                 ),
                               ),
 
+                              // Time
                               OutlinedButton.icon(
                                 onPressed: chooseTime,
                                 icon: const Icon(
                                   Icons.schedule_outlined,
                                 ),
                                 label: Text(
-                                  selectedTime.format(context),
+                                  selectedTime.format(
+                                    context,
+                                  ),
                                 ),
                               ),
+
+                              // Duration
                               MenuAnchor(
                                 menuChildren: [
-                                  MenuItemButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        durationMinutes = 30;
-                                      });
-                                    },
-                                    child: Text(
-                                      translate('30 minutes', '30 Minuten'),
-                                    ),
-                                  ),
-                                  MenuItemButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        durationMinutes = 60;
-                                      });
-                                    },
-                                    child: Text(
-                                      translate('60 minutes', '60 Minuten'),
-                                    ),
-                                  ),
-                                  MenuItemButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        durationMinutes = 90;
-                                      });
-                                    },
-                                    child: Text(
-                                      translate('90 minutes', '90 Minuten'),
-                                    ),
-                                  ),
-                                  MenuItemButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        durationMinutes = 120;
-                                      });
-                                    },
-                                    child: Text(
-                                      translate('120 minutes', '120 Minuten'),
-                                    ),
-                                  ),
+                                  durationButton(30),
+                                  durationButton(60),
+                                  durationButton(90),
+                                  durationButton(120),
                                 ],
                                 builder: (
-                                  BuildContext context,
-                                  MenuController controller,
-                                  Widget? child,
+                                  context,
+                                  controller,
+                                  child,
                                 ) {
                                   return InkWell(
                                     onTap: () {
@@ -342,15 +298,22 @@ class _SchedulePageState
                                         controller.open();
                                       }
                                     },
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius:
+                                        BorderRadius.circular(12),
                                     child: Container(
-                                      width: mobile ? double.infinity : 190,
-                                      height: 36,
-                                      padding: const EdgeInsets.symmetric(
+                                      width: mobile
+                                          ? double.infinity
+                                          : 190,
+                                      height: 40,
+                                      padding:
+                                          const EdgeInsets.symmetric(
                                         horizontal: 14,
                                       ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(
+                                          12,
+                                        ),
                                         border: Border.all(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -363,25 +326,17 @@ class _SchedulePageState
                                             Icons.timer_outlined,
                                             size: 18,
                                           ),
-
                                           const SizedBox(width: 8),
-
                                           Expanded(
                                             child: Text(
                                               translate(
                                                 '$durationMinutes minutes',
                                                 '$durationMinutes Minuten',
                                               ),
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.normal,
-                                              ),
                                             ),
                                           ),
-
                                           const Icon(
                                             Icons.arrow_drop_down,
-                                            size: 18,
                                           ),
                                         ],
                                       ),
@@ -389,22 +344,56 @@ class _SchedulePageState
                                   );
                                 },
                               ),
+
+                              // Silent or Vibrate selection
+                              SegmentedButton<String>(
+                                segments: [
+                                  ButtonSegment<String>(
+                                    value: 'silent',
+                                    icon: const Icon(
+                                      Icons.volume_off_outlined,
+                                    ),
+                                    label: Text(
+                                      translate(
+                                        'Silent',
+                                        'Lautlos',
+                                      ),
+                                    ),
+                                  ),
+                                  ButtonSegment<String>(
+                                    value: 'vibrate',
+                                    icon: const Icon(
+                                      Icons.vibration,
+                                    ),
+                                    label: Text(
+                                      translate(
+                                        'Vibrate',
+                                        'Vibrieren',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                selected: {
+                                  selectedMode,
+                                },
+                                onSelectionChanged:
+                                    (selection) {
+                                  setState(() {
+                                    selectedMode =
+                                        selection.first;
+                                  });
+                                },
+                              ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+
+                          const SizedBox(height: 20),
+
                           Align(
-                            alignment:
-                                Alignment
-                                    .centerLeft,
-                            child:
-                                FilledButton.icon(
-                              onPressed:
-                                  addMeeting,
-                              icon: const Icon(
-                                Icons.add,
-                              ),
+                            alignment: Alignment.centerLeft,
+                            child: FilledButton.icon(
+                              onPressed: addMeeting,
+                              icon: const Icon(Icons.add),
                               label: Text(
                                 translate(
                                   'Add Meeting',
@@ -417,7 +406,9 @@ class _SchedulePageState
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 24),
+
                   Text(
                     translate(
                       'Scheduled Meetings',
@@ -425,20 +416,18 @@ class _SchedulePageState
                     ),
                     style: const TextStyle(
                       fontSize: 20,
-                      fontWeight:
-                          FontWeight.w900,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
+
                   const SizedBox(height: 12),
+
                   if (sortedMeetings.isEmpty)
                     Card(
                       child: Padding(
-                        padding:
-                            const EdgeInsets
-                                .all(24),
+                        padding: const EdgeInsets.all(24),
                         child: SizedBox(
-                          width:
-                              double.infinity,
+                          width: double.infinity,
                           child: Text(
                             translate(
                               'The meeting will appear here',
@@ -452,26 +441,19 @@ class _SchedulePageState
                     ...sortedMeetings.map(
                       (meeting) {
                         return Padding(
-                          padding:
-                              const EdgeInsets
-                                  .only(
+                          padding: const EdgeInsets.only(
                             bottom: 12,
                           ),
                           child: MeetingCard(
                             meeting: meeting,
-                            german:
-                                widget.german,
-                            onDelete:
-                                () async {
-                              await widget
-                                  .onDeleteMeeting(
+                            german: widget.german,
+                            onDelete: () async {
+                              await widget.onDeleteMeeting(
                                 meeting,
                               );
                             },
-                            onToggle:
-                                (value) async {
-                              await widget
-                                  .onToggleMeeting(
+                            onToggle: (value) async {
+                              await widget.onToggleMeeting(
                                 meeting,
                                 value,
                               );
@@ -486,6 +468,22 @@ class _SchedulePageState
           ),
         );
       },
+    );
+  }
+
+  MenuItemButton durationButton(int minutes) {
+    return MenuItemButton(
+      onPressed: () {
+        setState(() {
+          durationMinutes = minutes;
+        });
+      },
+      child: Text(
+        translate(
+          '$minutes minutes',
+          '$minutes Minuten',
+        ),
+      ),
     );
   }
 }
@@ -514,13 +512,24 @@ class MeetingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final modeText = translate(
-      'Silent mode',
-      'Lautlosmodus',
-    );
+    final vibrateMode =
+        meeting.mode == 'vibrate';
 
-    final expired =
-        meeting.endTime.isBefore(
+    final modeText = vibrateMode
+        ? translate(
+            'Vibrate mode',
+            'Vibrationsmodus',
+          )
+        : translate(
+            'Silent mode',
+            'Lautlosmodus',
+          );
+
+    final modeIcon = vibrateMode
+        ? Icons.vibration
+        : Icons.volume_off_outlined;
+
+    final expired = meeting.endTime.isBefore(
       DateTime.now(),
     );
 
@@ -544,12 +553,10 @@ class MeetingCard extends StatelessWidget {
                         .colorScheme
                         .onSurface,
                     borderRadius:
-                        BorderRadius.circular(
-                      12,
-                    ),
+                        BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    Icons.volume_off_outlined,
+                    modeIcon,
                     color: Theme.of(context)
                         .colorScheme
                         .surface,
@@ -559,33 +566,26 @@ class MeetingCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment:
-                        CrossAxisAlignment
-                            .start,
+                        CrossAxisAlignment.start,
                     children: [
                       Text(
                         meeting.title,
                         maxLines: 2,
                         overflow:
-                            TextOverflow
-                                .ellipsis,
-                        style:
-                            const TextStyle(
+                            TextOverflow.ellipsis,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight:
                               FontWeight.w900,
                         ),
                       ),
-                      const SizedBox(
-                        height: 4,
-                      ),
+                      const SizedBox(height: 4),
                       Text(
                         '${formatMeetingDate(meeting.startTime)}  '
                         '${formatMeetingTime(meeting.startTime)} – '
                         '${formatMeetingTime(meeting.endTime)}',
                       ),
-                      const SizedBox(
-                        height: 3,
-                      ),
+                      const SizedBox(height: 3),
                       Text(
                         expired
                             ? translate(
@@ -594,14 +594,10 @@ class MeetingCard extends StatelessWidget {
                               )
                             : modeText,
                         style: TextStyle(
-                          color: Theme.of(
-                            context,
-                          )
+                          color: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withValues(
-                                alpha: 0.55,
-                              ),
+                              .withValues(alpha: 0.55),
                         ),
                       ),
                     ],
@@ -611,13 +607,11 @@ class MeetingCard extends StatelessWidget {
             );
 
             final actions = Row(
-              mainAxisSize:
-                  MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Switch(
                   value:
-                      meeting.enabled &&
-                          !expired,
+                      meeting.enabled && !expired,
                   onChanged: expired
                       ? null
                       : (value) {
@@ -642,13 +636,10 @@ class MeetingCard extends StatelessWidget {
             if (narrow) {
               return Column(
                 crossAxisAlignment:
-                    CrossAxisAlignment
-                        .stretch,
+                    CrossAxisAlignment.stretch,
                 children: [
                   information,
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Align(
                     alignment:
                         Alignment.centerRight,
