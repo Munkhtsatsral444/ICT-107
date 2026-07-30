@@ -46,3 +46,17 @@ lib/
 ├── widgets/
 │   └── clock_card.dart
 └── main.dart
+```
+
+## Run the App
+
+```bash
+flutter pub get
+flutter run
+```
+
+## Build APK
+
+```bash
+flutter build apk --release
+```
