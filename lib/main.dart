@@ -195,7 +195,60 @@ class _MeetingModeAppState
 
     await checkMeetingMode();
   }
+Future<void> updateMeeting(
+  Meeting updatedMeeting,
+) async {
+  setState(() {
+    meetings = meetings.map(
+      (meeting) {
+        if (meeting.id == updatedMeeting.id) {
+          return updatedMeeting;
+        }
 
+        return meeting;
+      },
+    ).toList();
+
+    meetings.sort(
+      (first, second) {
+        return first.startTime.compareTo(
+          second.startTime,
+        );
+      },
+    );
+  });
+
+  await StorageService.saveMeetings(
+    meetings,
+  );
+
+  await NotificationService.cancelMeeting(
+    updatedMeeting.id,
+  );
+
+  await AlarmService.cancelMeeting(
+    updatedMeeting.id,
+  );
+
+  if (updatedMeeting.enabled) {
+    await NotificationService.scheduleMeeting(
+      meeting: updatedMeeting,
+      german: german,
+    );
+
+    await AlarmService.scheduleMeeting(
+      updatedMeeting,
+    );
+  }
+
+  if (activeMeetingId == updatedMeeting.id) {
+    activeMeetingId = null;
+
+    await SoundService.restoreNormalMode();
+  }
+
+  await checkMeetingMode();
+}
   Future<void> deleteMeeting(
     Meeting meeting,
   ) async {
@@ -419,6 +472,7 @@ class _MeetingModeAppState
               german: german,
               meetings: meetings,
               onAddMeeting: addMeeting,
+              onUpdateMeeting: updateMeeting,
               onDeleteMeeting:
                   deleteMeeting,
               onToggleMeeting:

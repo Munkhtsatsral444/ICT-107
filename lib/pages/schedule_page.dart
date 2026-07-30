@@ -11,6 +11,9 @@ class SchedulePage extends StatefulWidget {
       onAddMeeting;
 
   final Future<void> Function(Meeting meeting)
+      onUpdateMeeting;
+
+  final Future<void> Function(Meeting meeting)
       onDeleteMeeting;
 
   final Future<void> Function(
@@ -23,6 +26,7 @@ class SchedulePage extends StatefulWidget {
     required this.german,
     required this.meetings,
     required this.onAddMeeting,
+    required this.onUpdateMeeting,
     required this.onDeleteMeeting,
     required this.onToggleMeeting,
   });
@@ -37,11 +41,16 @@ class _SchedulePageState extends State<SchedulePage> {
   final TextEditingController titleController =
       TextEditingController();
 
+  final ScrollController scrollController =
+      ScrollController();
+
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
 
   int durationMinutes = 60;
   String selectedMode = 'silent';
+
+  Meeting? editingMeeting;
 
   String translate(
     String english,
@@ -53,6 +62,7 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   void dispose() {
     titleController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -107,7 +117,48 @@ class _SchedulePageState extends State<SchedulePage> {
     }
   }
 
-  Future<void> addMeeting() async {
+  void startEditing(Meeting meeting) {
+    final meetingDuration = meeting.endTime
+        .difference(meeting.startTime)
+        .inMinutes;
+
+    setState(() {
+      editingMeeting = meeting;
+      titleController.text = meeting.title;
+      selectedDate = meeting.startTime;
+      selectedTime = TimeOfDay.fromDateTime(
+        meeting.startTime,
+      );
+      durationMinutes = meetingDuration;
+      selectedMode = meeting.mode == 'vibrate'
+          ? 'vibrate'
+          : 'silent';
+    });
+
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(
+          milliseconds: 350,
+        ),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  void resetForm() {
+    titleController.clear();
+
+    setState(() {
+      editingMeeting = null;
+      selectedDate = DateTime.now();
+      selectedTime = TimeOfDay.now();
+      durationMinutes = 60;
+      selectedMode = 'silent';
+    });
+  }
+
+  Future<void> saveMeeting() async {
     final title = titleController.text.trim();
 
     if (title.isEmpty) {
@@ -138,9 +189,12 @@ class _SchedulePageState extends State<SchedulePage> {
       return;
     }
 
-    final meetingId = DateTime.now()
-        .millisecondsSinceEpoch
-        .remainder(2147483647);
+    final currentEditingMeeting = editingMeeting;
+
+    final meetingId = currentEditingMeeting?.id ??
+        DateTime.now()
+            .millisecondsSinceEpoch
+            .remainder(2147483647);
 
     final meeting = Meeting(
       id: meetingId,
@@ -150,29 +204,32 @@ class _SchedulePageState extends State<SchedulePage> {
         Duration(minutes: durationMinutes),
       ),
       mode: selectedMode,
+      enabled:
+          currentEditingMeeting?.enabled ?? true,
     );
 
-    await widget.onAddMeeting(meeting);
-
-    titleController.clear();
+    if (currentEditingMeeting == null) {
+      await widget.onAddMeeting(meeting);
+    } else {
+      await widget.onUpdateMeeting(meeting);
+    }
 
     if (!mounted) {
       return;
     }
 
-    setState(() {
-      selectedDate = DateTime.now();
-      selectedTime = TimeOfDay.now();
-      durationMinutes = 60;
-      selectedMode = 'silent';
-    });
+    final message = currentEditingMeeting == null
+        ? translate(
+            'Meeting added successfully',
+            'Meeting wurde erfolgreich hinzugefügt',
+          )
+        : translate(
+            'Meeting updated successfully',
+            'Meeting wurde erfolgreich aktualisiert',
+          );
 
-    showMessage(
-      translate(
-        'Meeting added successfully',
-        'Meeting wurde erfolgreich hinzugefügt',
-      ),
-    );
+    resetForm();
+    showMessage(message);
   }
 
   void showMessage(String message) {
@@ -187,6 +244,22 @@ class _SchedulePageState extends State<SchedulePage> {
           content: Text(message),
         ),
       );
+  }
+
+  MenuItemButton durationButton(int minutes) {
+    return MenuItemButton(
+      onPressed: () {
+        setState(() {
+          durationMinutes = minutes;
+        });
+      },
+      child: Text(
+        translate(
+          '$minutes minutes',
+          '$minutes Minuten',
+        ),
+      ),
+    );
   }
 
   @override
@@ -206,6 +279,7 @@ class _SchedulePageState extends State<SchedulePage> {
           );
 
         return SingleChildScrollView(
+          controller: scrollController,
           padding: EdgeInsets.all(
             mobile ? 16 : 24,
           ),
@@ -219,10 +293,15 @@ class _SchedulePageState extends State<SchedulePage> {
                     CrossAxisAlignment.start,
                 children: [
                   Text(
-                    translate(
-                      'Add Meeting',
-                      'Meeting hinzufügen',
-                    ),
+                    editingMeeting == null
+                        ? translate(
+                            'Add Meeting',
+                            'Meeting hinzufügen',
+                          )
+                        : translate(
+                            'Edit Meeting',
+                            'Meeting bearbeiten',
+                          ),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: mobile ? 34 : 40,
                       fontWeight: FontWeight.w600,
@@ -231,10 +310,15 @@ class _SchedulePageState extends State<SchedulePage> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    translate(
-                      'Create a meeting with silent or vibration mode',
-                      'Erstellen Sie ein Meeting mit Lautlos- oder Vibrationsmodus',
-                    ),
+                    editingMeeting == null
+                        ? translate(
+                            'Create a meeting with silent or vibration mode',
+                            'Erstellen Sie ein Meeting mit Lautlos- oder Vibrationsmodus',
+                          )
+                        : translate(
+                            'Update the meeting information',
+                            'Aktualisieren Sie die Meeting-Informationen',
+                          ),
                     style: TextStyle(
                       color: Theme.of(context)
                           .colorScheme
@@ -244,7 +328,6 @@ class _SchedulePageState extends State<SchedulePage> {
                   ),
                   const SizedBox(height: 22),
 
-                  // Meeting form
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
@@ -272,7 +355,6 @@ class _SchedulePageState extends State<SchedulePage> {
                             spacing: 12,
                             runSpacing: 12,
                             children: [
-                              // Date
                               OutlinedButton.icon(
                                 onPressed: chooseDate,
                                 icon: const Icon(
@@ -285,7 +367,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                 ),
                               ),
 
-                              // Time
                               OutlinedButton.icon(
                                 onPressed: chooseTime,
                                 icon: const Icon(
@@ -298,7 +379,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                 ),
                               ),
 
-                              // Duration
                               MenuAnchor(
                                 menuChildren: [
                                   durationButton(30),
@@ -366,7 +446,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                 },
                               ),
 
-                              // Silent or Vibrate selection
                               SegmentedButton<String>(
                                 segments: [
                                   ButtonSegment<String>(
@@ -410,18 +489,41 @@ class _SchedulePageState extends State<SchedulePage> {
 
                           const SizedBox(height: 20),
 
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: FilledButton.icon(
-                              onPressed: addMeeting,
-                              icon: const Icon(Icons.add),
-                              label: Text(
-                                translate(
-                                  'Add Meeting',
-                                  'Meeting hinzufügen',
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              FilledButton.icon(
+                                onPressed: saveMeeting,
+                                icon: Icon(
+                                  editingMeeting == null
+                                      ? Icons.add
+                                      : Icons.save_outlined,
+                                ),
+                                label: Text(
+                                  editingMeeting == null
+                                      ? translate(
+                                          'Add Meeting',
+                                          'Meeting hinzufügen',
+                                        )
+                                      : translate(
+                                          'Update Meeting',
+                                          'Meeting aktualisieren',
+                                        ),
                                 ),
                               ),
-                            ),
+
+                              if (editingMeeting != null)
+                                TextButton(
+                                  onPressed: resetForm,
+                                  child: Text(
+                                    translate(
+                                      'Cancel Edit',
+                                      'Bearbeiten abbrechen',
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ],
                       ),
@@ -468,6 +570,9 @@ class _SchedulePageState extends State<SchedulePage> {
                           child: MeetingCard(
                             meeting: meeting,
                             german: widget.german,
+                            onEdit: () {
+                              startEditing(meeting);
+                            },
                             onDelete: () async {
                               await widget.onDeleteMeeting(
                                 meeting,
@@ -491,27 +596,12 @@ class _SchedulePageState extends State<SchedulePage> {
       },
     );
   }
-
-  MenuItemButton durationButton(int minutes) {
-    return MenuItemButton(
-      onPressed: () {
-        setState(() {
-          durationMinutes = minutes;
-        });
-      },
-      child: Text(
-        translate(
-          '$minutes minutes',
-          '$minutes Minuten',
-        ),
-      ),
-    );
-  }
 }
 
 class MeetingCard extends StatelessWidget {
   final Meeting meeting;
   final bool german;
+  final VoidCallback onEdit;
   final Future<void> Function() onDelete;
   final Future<void> Function(bool value)
       onToggle;
@@ -520,6 +610,7 @@ class MeetingCard extends StatelessWidget {
     super.key,
     required this.meeting,
     required this.german,
+    required this.onEdit,
     required this.onDelete,
     required this.onToggle,
   });
@@ -638,6 +729,17 @@ class MeetingCard extends StatelessWidget {
                       : (value) {
                           onToggle(value);
                         },
+                ),
+                IconButton(
+                  tooltip: translate(
+                    'Edit',
+                    'Bearbeiten',
+                  ),
+                  onPressed: onEdit,
+                     
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                  ),
                 ),
                 IconButton(
                   tooltip: translate(
