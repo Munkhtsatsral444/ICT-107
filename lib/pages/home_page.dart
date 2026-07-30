@@ -113,15 +113,15 @@ class HomePage extends StatelessWidget {
             : 24.0;
         
         final meetingModeHeader = Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FittedBox(
               fit: BoxFit.scaleDown,
-              alignment: Alignment.centerRight,
+              alignment: Alignment.centerLeft,
               child: Text(
                 translate(
-                  'MEETING MODE',
-                  'MEETING-MODUS',
+                  'MEETING SILENT MODE',
+                  'MEETING-LAUTLOSMODUS',
                 ),
                 maxLines: 1,
                 softWrap: false,
@@ -136,11 +136,11 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 10),
             FittedBox(
               fit: BoxFit.scaleDown,
-              alignment: Alignment.centerRight,
+              alignment: Alignment.centerLeft,
               child: Text(
                 translate(
-                  'SCHEDULE • SILENT MODE • WORLD CLOCK',
-                  'ZEITPLAN • LAUTLOSMODUS • WELTUHR',
+                  'SCHEDULE • REMINDERS • WORLD CLOCK',
+                  'ZEITPLAN • ERINNERUNGEN • WELTUHR',
                 ),
                 maxLines: 1,
                 softWrap: false,
@@ -489,64 +489,70 @@ class HomePage extends StatelessWidget {
         );
 
         final Widget content;
+
           if (mobile) {
-          content = Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              greetingCard,
-              const SizedBox(height: 20),
-
-              meetingModeHeader,
-              const SizedBox(height: 20),
-
-              overviewCard,
-              const SizedBox(height: 14),
-
-              platformsCard,
-              const SizedBox(height: 14),
-
-              reminderCard,
-              const SizedBox(height: 14),
-
-              upcomingMeetingsCard,
-            ],
-          );
-        } else {
-            content = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            content = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      greetingCard,
-                      const SizedBox(height: 14),
+                meetingModeHeader,
+                const SizedBox(height: 24),
 
-                      reminderCard,
-                      const SizedBox(height: 14),
+                greetingCard,
+                const SizedBox(height: 14),
 
-                      upcomingMeetingsCard,
-                    ],
-                  ),
-                ),
+                overviewCard,
+                const SizedBox(height: 14),
 
-                const SizedBox(width: 16),
+                platformsCard,
+                const SizedBox(height: 14),
 
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      meetingModeHeader,
-                      const SizedBox(height: 24),
+                reminderCard,
+                const SizedBox(height: 14),
 
-                      overviewCard,
-                      const SizedBox(height: 14),
+                upcomingMeetingsCard,
+              ],
+            );
+          } else {
+            content = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                meetingModeHeader,
+                const SizedBox(height: 32),
 
-                      platformsCard,
-                    ],
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          greetingCard,
+                          const SizedBox(height: 14),
+
+                          reminderCard,
+                          const SizedBox(height: 14),
+
+                          upcomingMeetingsCard,
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 16),
+
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          overviewCard,
+                          const SizedBox(height: 14),
+
+                          platformsCard,
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );
