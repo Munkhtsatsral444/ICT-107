@@ -123,4 +123,34 @@ void main() {
       );
     },
   );
+  test(
+  'Vibrate mode is saved in JSON',
+  () {
+    final meeting = Meeting(
+      id: 4,
+      title: 'Vibrate Meeting',
+      startTime: DateTime(
+        2026,
+        8,
+        10,
+        14,
+      ),
+      endTime: DateTime(
+        2026,
+        8,
+        10,
+        15,
+      ),
+      mode: 'vibrate',
+    );
+
+    final json = meeting.toJson();
+    final restored = Meeting.fromJson(json);
+
+    expect(
+      restored.mode,
+      'vibrate',
+    );
+  },
+);
 }
