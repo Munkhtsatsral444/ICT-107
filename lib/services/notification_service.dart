@@ -320,15 +320,21 @@ class NotificationService {
   }) async {
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_test_channel',
+        'meeting_test_silent_channel_v2',
         'Meeting Notifications',
         channelDescription:
-            'Notifications for Meeting Mode',
+            'Silent notifications for Meeting Mode',
         importance: Importance.high,
         priority: Priority.high,
+        playSound: false,
+        enableVibration: false,
       ),
-      iOS: DarwinNotificationDetails(),
-      macOS: DarwinNotificationDetails(),
+      iOS: DarwinNotificationDetails(
+        presentSound: false,
+      ),
+      macOS: DarwinNotificationDetails(
+        presentSound: false,
+      ),
       web: WebNotificationDetails(
         requireInteraction: true,
       ),
