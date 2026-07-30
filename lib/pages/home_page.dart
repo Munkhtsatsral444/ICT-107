@@ -120,7 +120,7 @@ class HomePage extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 translate(
-                  'MEETING SILENT MODE',
+                  'MEETING SILENT SCHEDULER',
                   'MEETING-LAUTLOSMODUS',
                 ),
                 maxLines: 1,
