@@ -77,6 +77,27 @@ class _SchedulePageState extends State<SchedulePage> {
     final result = await showTimePicker(
       context: context,
       initialTime: selectedTime,
+      helpText: translate(
+        'Select time',
+        'Uhrzeit auswählen',
+      ),
+      cancelText: translate(
+        'Cancel',
+        'Abbrechen',
+      ),
+      confirmText: 'OK',
+      builder: (context, child) {
+        return Localizations.override(
+          context: context,
+          locale: const Locale('en'),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              alwaysUse24HourFormat: false,
+            ),
+            child: child!,
+          ),
+        );
+      },
     );
 
     if (result != null) {

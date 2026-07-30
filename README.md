@@ -1,17 +1,48 @@
-# ict107_group_project
+# Meeting Mode
 
-A new Flutter project.
+Meeting Mode is a responsive Flutter application for managing meeting schedules. It can automatically change an Android device to silent or vibration mode during scheduled meeting hours.
 
-## Getting Started
+## Main Features
 
-This project is a starting point for a Flutter application.
+- Create meeting schedules
+- Select meeting date, time, and duration
+- Choose Silent or Vibrate mode
+- Enable, disable, and delete meetings
+- Receive pre-meeting notifications
+- Display time for major international cities
+- Switch between English and German
+- Switch between light and dark themes
+- Open Zoom, Google Meet, and Microsoft Teams
+- Responsive layout for mobile, tablet, and web
+- Store meetings and settings locally
 
-A few resources to get you started if this is your first Flutter project:
+## Technologies
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter
+- Dart
+- Kotlin for Android functionality
+- SharedPreferences for local storage
+- JSON for meeting data
+- Flutter Local Notifications
+- Timezone package
+- Sound Mode package
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Project Structure
+
+```text
+lib/
+├── models/
+│   └── meeting.dart
+├── pages/
+│   ├── home_page.dart
+│   ├── schedule_page.dart
+│   ├── settings_page.dart
+│   └── world_clock_page.dart
+├── services/
+│   ├── alarm_service.dart
+│   ├── notification_service.dart
+│   ├── sound_service.dart
+│   └── storage_service.dart
+├── widgets/
+│   └── clock_card.dart
+└── main.dart
