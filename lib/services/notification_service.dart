@@ -214,28 +214,25 @@ class NotificationService {
       timezone.local,
     );
 
-    final vibrate = meeting.mode == 'vibrate';
-
-    final notificationDetails = NotificationDetails(
+    const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        vibrate
-            ? 'meeting_vibrate_channel_v2'
-            : 'meeting_silent_channel_v2',
-        vibrate
-            ? 'Vibrate Meeting Reminders'
-            : 'Silent Meeting Reminders',
+        'meeting_test_alert_channel_v3',
+        'Meeting Test Alerts',
         channelDescription:
-            'Notifications before scheduled meetings',
+            'Test notifications for Meeting Silent Scheduler',
         importance: Importance.high,
         priority: Priority.high,
-        playSound: false,
-        enableVibration: vibrate,
+        playSound: true,
+        enableVibration: true,
       ),
-      iOS: const DarwinNotificationDetails(
-        presentSound: false,
+      iOS: DarwinNotificationDetails(
+        presentSound: true,
       ),
-      macOS: const DarwinNotificationDetails(
-        presentSound: false,
+      macOS: DarwinNotificationDetails(
+        presentSound: true,
+      ),
+      web: WebNotificationDetails(
+        requireInteraction: true,
       ),
     );
 
@@ -330,23 +327,20 @@ class NotificationService {
   }) async {
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_test_silent_channel_v2',
-        'Meeting Notifications',
+        'meeting_reminder_alert_channel_v3',
+        'Meeting Reminder Alerts',
         channelDescription:
-            'Silent notifications for Meeting Mode',
+            'Audible alerts one minute before meetings',
         importance: Importance.high,
         priority: Priority.high,
-        playSound: false,
-        enableVibration: false,
+        playSound: true,
+        enableVibration: true,
       ),
       iOS: DarwinNotificationDetails(
-        presentSound: false,
+        presentSound: true,
       ),
       macOS: DarwinNotificationDetails(
-        presentSound: false,
-      ),
-      web: WebNotificationDetails(
-        requireInteraction: true,
+        presentSound: true,
       ),
     );
 

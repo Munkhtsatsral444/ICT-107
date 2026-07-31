@@ -185,8 +185,8 @@ class SettingsPage extends StatelessWidget {
                     subtitle:
                         notificationSupported
                             ? translate(
-                                'Enable reminders five minutes before meetings',
-                                'Erinnerungen fünf Minuten vor Meetings aktivieren',
+                                'Enable reminders one minute before meetings',
+                                'Erinnere mich eine Minute vor Meetings',
                               )
                             : translate(
                                 'Notifications are unavailable on this platform',
