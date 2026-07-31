@@ -90,13 +90,45 @@ class MainActivity : FlutterActivity() {
             return false
         }
 
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.ringerMode = when (mode) {
-            "silent" -> AudioManager.RINGER_MODE_SILENT
-            "vibrate" -> AudioManager.RINGER_MODE_VIBRATE
-            else -> AudioManager.RINGER_MODE_NORMAL
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
+
+        val audioManager =
+            getSystemService(Context.AUDIO_SERVICE)
+                as AudioManager
+
+        return try {
+            when (mode) {
+                "silent" -> {
+                    notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_NONE
+                    )
+                    audioManager.ringerMode =
+                        AudioManager.RINGER_MODE_SILENT
+                }
+
+                "vibrate" -> {
+                    notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_ALL
+                    )
+                    audioManager.ringerMode =
+                        AudioManager.RINGER_MODE_VIBRATE
+                }
+
+                else -> {
+                    notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_ALL
+                    )
+                    audioManager.ringerMode =
+                        AudioManager.RINGER_MODE_NORMAL
+                }
+            }
+
+            true
+        } catch (_: SecurityException) {
+            false
         }
-        return true
     }
 
     private fun scheduleMeeting(

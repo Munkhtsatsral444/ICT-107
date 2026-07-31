@@ -108,6 +108,8 @@ class NotificationService {
             .resolvePlatformSpecificImplementation<
                 AndroidFlutterLocalNotificationsPlugin>();
 
+        await androidPlugin?.requestExactAlarmsPermission();
+
         final result =
             await androidPlugin?.requestNotificationsPermission();
 
@@ -156,8 +158,16 @@ class NotificationService {
       return;
     }
 
-    final reminderTime = meeting.startTime.subtract(
-      const Duration(minutes: 5),
+    final startAtExactMinute = DateTime(
+      meeting.startTime.year,
+      meeting.startTime.month,
+      meeting.startTime.day,
+      meeting.startTime.hour,
+      meeting.startTime.minute,
+    );
+
+    final reminderTime = startAtExactMinute.subtract(
+      const Duration(minutes: 1),
     );
 
     if (!reminderTime.isAfter(DateTime.now())) {
@@ -173,8 +183,8 @@ class NotificationService {
         : 'Meeting Reminder';
 
     final body = german
-        ? '${meeting.title} beginnt in 5 Minuten. $modeText.'
-        : '${meeting.title} starts in 5 minutes. $modeText.';
+      ? '${meeting.title} beginnt in 1 Minute. $modeText.'
+      : '${meeting.title} starts in 1 minute. $modeText.';
 
     if (kIsWeb) {
       _webTimers[meeting.id]?.cancel();
@@ -237,7 +247,7 @@ class NotificationService {
         scheduledDate: scheduledTime,
         notificationDetails: notificationDetails,
         androidScheduleMode:
-            AndroidScheduleMode.inexactAllowWhileIdle,
+            AndroidScheduleMode.exactAllowWhileIdle,
         payload: meeting.id.toString(),
       );
     } catch (_) {
