@@ -216,8 +216,8 @@ class SettingsPage extends StatelessWidget {
                     subtitle:
                         meetingModeSupported
                             ? translate(
-                                'Allow automatic silent and vibrate mode',
-                                'Automatischen Lautlos- und Vibrationsmodus erlauben',
+                                'Allow automatic silent mode',
+                                'Automatischen Lautlosmodus erlauben',
                               )
                             : translate(
                                 'Automatic sound mode is available on Android',

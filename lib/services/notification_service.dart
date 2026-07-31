@@ -174,9 +174,8 @@ class NotificationService {
       return;
     }
 
-    final modeText = meeting.mode == 'vibrate'
-        ? (german ? 'Vibrationsmodus' : 'Vibrate mode')
-        : (german ? 'Lautlosmodus' : 'Silent mode');
+    final modeText =
+        german ? 'Lautlosmodus' : 'Silent mode';
 
     final title = german
         ? 'Meeting-Erinnerung'
@@ -216,14 +215,14 @@ class NotificationService {
 
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_reminder_alert_channel_v3',
+        'meeting_reminder_sound_channel_v4',
         'Meeting Reminder Alerts',
         channelDescription:
             'Audible alerts one minute before meetings',
         importance: Importance.high,
         priority: Priority.high,
         playSound: true,
-        enableVibration: true,
+        enableVibration: false,
       ),
       iOS: DarwinNotificationDetails(
         presentSound: true,
@@ -324,14 +323,14 @@ class NotificationService {
   }) async {
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_test_alert_channel_v3',
+        'meeting_test_sound_channel_v4',
         'Meeting Test Alerts',
         channelDescription:
             'Test notifications for Meeting Silent Scheduler',
         importance: Importance.high,
         priority: Priority.high,
         playSound: true,
-        enableVibration: true,
+        enableVibration: false,
       ),
       iOS: DarwinNotificationDetails(
         presentSound: true,

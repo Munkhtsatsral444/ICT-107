@@ -36,9 +36,7 @@ class SoundService {
     }
   }
 
-  static Future<bool> setMeetingMode(
-    String mode,
-  ) async {
+  static Future<bool> setMeetingMode() async {
     if (!isSupported) {
       return false;
     }
@@ -47,8 +45,7 @@ class SoundService {
       return await _channel.invokeMethod<bool>(
             'setMode',
             {
-              'mode':
-                  mode == 'vibrate' ? 'vibrate' : 'silent',
+              'mode': 'silent',
             },
           ) ??
           false;

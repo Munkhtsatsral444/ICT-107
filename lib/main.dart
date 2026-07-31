@@ -353,9 +353,7 @@ Future<void> updateMeeting(
 
       // Reapply the selected mode on every check so calls and
       // other apps cannot leave the device ringing mid-meeting.
-      await SoundService.setMeetingMode(
-        activeMeeting.mode,
-      );
+      await SoundService.setMeetingMode();
 
       return;
     }

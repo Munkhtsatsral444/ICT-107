@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:meeting_mode/models/meeting.dart';
+
 void main() {
   test(
     'Meeting converts to JSON and back',
@@ -20,7 +21,6 @@ void main() {
           10,
           11,
         ),
-        mode: 'silent',
       );
 
       final json = meeting.toJson();
@@ -39,10 +39,6 @@ void main() {
       expect(
         restored.endTime,
         meeting.endTime,
-      );
-      expect(
-        restored.mode,
-        meeting.mode,
       );
       expect(
         restored.enabled,
@@ -69,7 +65,6 @@ void main() {
           10,
           11,
         ),
-        mode: 'vibrate',
       );
 
       final currentTime = DateTime(
@@ -105,7 +100,6 @@ void main() {
           10,
           11,
         ),
-        mode: 'silent',
         enabled: false,
       );
 
@@ -123,34 +117,33 @@ void main() {
       );
     },
   );
+
   test(
-  'Vibrate mode is saved in JSON',
-  () {
-    final meeting = Meeting(
-      id: 4,
-      title: 'Vibrate Meeting',
-      startTime: DateTime(
-        2026,
-        8,
-        10,
-        14,
-      ),
-      endTime: DateTime(
-        2026,
-        8,
-        10,
-        15,
-      ),
-      mode: 'vibrate',
-    );
+    'Meeting JSON stores schedule data only',
+    () {
+      final meeting = Meeting(
+        id: 4,
+        title: 'Silent Meeting',
+        startTime: DateTime(
+          2026,
+          8,
+          10,
+          14,
+        ),
+        endTime: DateTime(
+          2026,
+          8,
+          10,
+          15,
+        ),
+      );
 
-    final json = meeting.toJson();
-    final restored = Meeting.fromJson(json);
+      final json = meeting.toJson();
 
-    expect(
-      restored.mode,
-      'vibrate',
-    );
-  },
-);
+      expect(
+        json.containsKey('mode'),
+        false,
+      );
+    },
+  );
 }

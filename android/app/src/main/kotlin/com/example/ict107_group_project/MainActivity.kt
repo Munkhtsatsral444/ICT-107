@@ -41,7 +41,7 @@ class MainActivity : FlutterActivity() {
                     val id = call.argument<Int>("id")
                     val startMillis = call.argument<Number>("startMillis")?.toLong()
                     val endMillis = call.argument<Number>("endMillis")?.toLong()
-                    val mode = call.argument<String>("mode") ?: "vibrate"
+                    val mode = "silent"
 
                     if (id == null || startMillis == null || endMillis == null) {
                         result.error(
@@ -106,14 +106,6 @@ class MainActivity : FlutterActivity() {
                     )
                     audioManager.ringerMode =
                         AudioManager.RINGER_MODE_SILENT
-                }
-
-                "vibrate" -> {
-                    notificationManager.setInterruptionFilter(
-                        NotificationManager.INTERRUPTION_FILTER_ALL
-                    )
-                    audioManager.ringerMode =
-                        AudioManager.RINGER_MODE_VIBRATE
                 }
 
                 else -> {
@@ -228,7 +220,7 @@ class MainActivity : FlutterActivity() {
         val startIntent = alarmPendingIntent(
             requestCode = startRequestCode(id),
             action = MeetingAlarmReceiver.ACTION_START,
-            mode = "vibrate",
+            mode = "silent",
             flags = PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
         )
         val endIntent = alarmPendingIntent(

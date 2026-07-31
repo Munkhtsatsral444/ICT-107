@@ -29,7 +29,7 @@ class AlarmService {
               meeting.startTime.millisecondsSinceEpoch,
           'endMillis':
               meeting.endTime.millisecondsSinceEpoch,
-          'mode': meeting.mode,
+          'mode': 'silent',
         },
       );
     } on PlatformException {

@@ -48,7 +48,6 @@ class _SchedulePageState extends State<SchedulePage> {
   TimeOfDay selectedTime = TimeOfDay.now();
 
   int durationMinutes = 60;
-  String selectedMode = 'silent';
 
   Meeting? editingMeeting;
 
@@ -130,9 +129,6 @@ class _SchedulePageState extends State<SchedulePage> {
         meeting.startTime,
       );
       durationMinutes = meetingDuration;
-      selectedMode = meeting.mode == 'vibrate'
-          ? 'vibrate'
-          : 'silent';
     });
 
     if (scrollController.hasClients) {
@@ -154,7 +150,6 @@ class _SchedulePageState extends State<SchedulePage> {
       selectedDate = DateTime.now();
       selectedTime = TimeOfDay.now();
       durationMinutes = 60;
-      selectedMode = 'silent';
     });
   }
 
@@ -203,7 +198,6 @@ class _SchedulePageState extends State<SchedulePage> {
       endTime: startTime.add(
         Duration(minutes: durationMinutes),
       ),
-      mode: selectedMode,
       enabled:
           currentEditingMeeting?.enabled ?? true,
     );
@@ -312,8 +306,8 @@ class _SchedulePageState extends State<SchedulePage> {
                   Text(
                     editingMeeting == null
                         ? translate(
-                            'Create a meeting with silent or vibration mode',
-                            'Erstellen Sie ein Meeting mit Lautlos- oder Vibrationsmodus',
+                            'Create a meeting with automatic silent mode',
+                            'Erstellen Sie ein Meeting mit automatischem Lautlosmodus',
                           )
                         : translate(
                             'Update the meeting information',
@@ -446,43 +440,17 @@ class _SchedulePageState extends State<SchedulePage> {
                                 },
                               ),
 
-                              SegmentedButton<String>(
-                                segments: [
-                                  ButtonSegment<String>(
-                                    value: 'silent',
-                                    icon: const Icon(
-                                      Icons.volume_off_outlined,
-                                    ),
-                                    label: Text(
-                                      translate(
-                                        'Silent',
-                                        'Lautlos',
-                                      ),
-                                    ),
+                              Chip(
+                                avatar: const Icon(
+                                  Icons.volume_off_outlined,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  translate(
+                                    'Silent mode',
+                                    'Lautlosmodus',
                                   ),
-                                  ButtonSegment<String>(
-                                    value: 'vibrate',
-                                    icon: const Icon(
-                                      Icons.vibration,
-                                    ),
-                                    label: Text(
-                                      translate(
-                                        'Vibrate',
-                                        'Vibrieren',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                selected: {
-                                  selectedMode,
-                                },
-                                onSelectionChanged:
-                                    (selection) {
-                                  setState(() {
-                                    selectedMode =
-                                        selection.first;
-                                  });
-                                },
+                                ),
                               ),
                             ],
                           ),
@@ -624,22 +592,13 @@ class MeetingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vibrateMode =
-        meeting.mode == 'vibrate';
+    final modeText = translate(
+      'Silent mode',
+      'Lautlosmodus',
+    );
 
-    final modeText = vibrateMode
-        ? translate(
-            'Vibrate mode',
-            'Vibrationsmodus',
-          )
-        : translate(
-            'Silent mode',
-            'Lautlosmodus',
-          );
-
-    final modeIcon = vibrateMode
-        ? Icons.vibration
-        : Icons.volume_off_outlined;
+    const modeIcon =
+        Icons.volume_off_outlined;
 
     final expired = meeting.endTime.isBefore(
       DateTime.now(),

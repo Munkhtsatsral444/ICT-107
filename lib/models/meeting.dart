@@ -3,7 +3,6 @@ class Meeting {
   final String title;
   final DateTime startTime;
   final DateTime endTime;
-  final String mode;
   final bool enabled;
 
   const Meeting({
@@ -11,7 +10,6 @@ class Meeting {
     required this.title,
     required this.startTime,
     required this.endTime,
-    required this.mode,
     this.enabled = true,
   });
 
@@ -25,7 +23,6 @@ class Meeting {
     String? title,
     DateTime? startTime,
     DateTime? endTime,
-    String? mode,
     bool? enabled,
   }) {
     return Meeting(
@@ -33,7 +30,6 @@ class Meeting {
       title: title ?? this.title,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      mode: mode ?? this.mode,
       enabled: enabled ?? this.enabled,
     );
   }
@@ -44,7 +40,6 @@ class Meeting {
       'title': title,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
-      'mode': mode,
       'enabled': enabled,
     };
   }
@@ -59,7 +54,6 @@ class Meeting {
       endTime: DateTime.parse(
         json['endTime'] as String,
       ),
-      mode: json['mode'] as String? ?? 'silent',
       enabled: json['enabled'] as bool? ?? true,
     );
   }

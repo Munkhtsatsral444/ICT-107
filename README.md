@@ -1,11 +1,11 @@
 # Meeting Silent Scheduler
-Meeting Mode is a responsive Flutter application for managing meeting schedules. It can automatically change an Android device to silent or vibration mode during scheduled meeting hours.
+Meeting Silent Scheduler is a responsive Flutter application for managing meeting schedules. It can automatically change an Android device to silent mode during scheduled meeting hours.
 
 ## Main Features
 
 - Create meeting schedules
 - Select meeting date, time, and duration
-- Choose Silent or Vibrate mode
+- Automatically use Silent mode
 - Enable, disable, and delete meetings
 - Receive pre-meeting notifications
 - Display time for major international cities

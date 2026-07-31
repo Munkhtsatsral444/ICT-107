@@ -46,15 +46,6 @@ class MeetingAlarmReceiver : BroadcastReceiver() {
                         AudioManager.RINGER_MODE_SILENT
                 }
 
-                "vibrate" -> {
-                    notificationManager.setInterruptionFilter(
-                        NotificationManager.INTERRUPTION_FILTER_ALL
-                    )
-
-                    audioManager.ringerMode =
-                        AudioManager.RINGER_MODE_VIBRATE
-                }
-
                 else -> {
                     notificationManager.setInterruptionFilter(
                         NotificationManager.INTERRUPTION_FILTER_ALL
