@@ -24,7 +24,6 @@ Meeting Silent Scheduler is a responsive Flutter application for managing meetin
 - JSON for meeting data
 - Flutter Local Notifications
 - Timezone package
-- Sound Mode package
 
 ## Project Structure
 
