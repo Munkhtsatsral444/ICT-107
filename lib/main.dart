@@ -348,15 +348,14 @@ Future<void> updateMeeting(
     }
 
     if (activeMeeting != null) {
-      if (activeMeetingId !=
-          activeMeeting.id) {
-        activeMeetingId =
-            activeMeeting.id;
+      activeMeetingId =
+          activeMeeting.id;
 
-        await SoundService.setMeetingMode(
-          activeMeeting.mode,
-        );
-      }
+      // Reapply the selected mode on every check so calls and
+      // other apps cannot leave the device ringing mid-meeting.
+      await SoundService.setMeetingMode(
+        activeMeeting.mode,
+      );
 
       return;
     }

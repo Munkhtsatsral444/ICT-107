@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:sound_mode/permission_handler.dart';
-import 'package:sound_mode/sound_mode.dart';
-import 'package:sound_mode/utils/ringer_mode_statuses.dart';
 
 class SoundService {
+  static const MethodChannel _channel =
+      MethodChannel('meeting_mode/audio');
+
   static bool get isSupported {
     return !kIsWeb &&
         defaultTargetPlatform == TargetPlatform.android;
@@ -16,68 +16,62 @@ class SoundService {
     }
 
     try {
-      final bool? permissionGranted =
-          await PermissionHandler.permissionsGranted;
+      final permissionGranted =
+          await _channel.invokeMethod<bool>(
+                'hasPolicyAccess',
+              ) ??
+              false;
 
-      if (permissionGranted == true) {
+      if (permissionGranted) {
         return true;
       }
 
-      await PermissionHandler.openDoNotDisturbSetting();
+      await _channel.invokeMethod<void>(
+        'requestPolicyAccess',
+      );
 
       return false;
-    } catch (_) {
+    } on PlatformException {
       return false;
     }
   }
 
-  static Future<void> setMeetingMode(
+  static Future<bool> setMeetingMode(
     String mode,
   ) async {
     if (!isSupported) {
-      return;
+      return false;
     }
 
     try {
-      final bool? permissionGranted =
-          await PermissionHandler.permissionsGranted;
-
-      if (permissionGranted != true) {
-        return;
-      }
-
-      final targetMode = mode == 'vibrate'
-          ? RingerModeStatus.vibrate
-          : RingerModeStatus.silent;
-
-      await SoundMode.setSoundMode(
-        targetMode,
-      );
+      return await _channel.invokeMethod<bool>(
+            'setMode',
+            {
+              'mode':
+                  mode == 'vibrate' ? 'vibrate' : 'silent',
+            },
+          ) ??
+          false;
     } on PlatformException {
-      // Ignore unsupported sound mode errors.
-    } catch (_) {
-      // Ignore other sound mode errors.
+      return false;
     }
   }
 
-  static Future<void> restoreNormalMode() async {
+  static Future<bool> restoreNormalMode() async {
     if (!isSupported) {
-      return;
+      return false;
     }
 
     try {
-      final bool? permissionGranted =
-          await PermissionHandler.permissionsGranted;
-
-      if (permissionGranted == true) {
-        await SoundMode.setSoundMode(
-          RingerModeStatus.normal,
-        );
-      }
+      return await _channel.invokeMethod<bool>(
+            'setMode',
+            {
+              'mode': 'normal',
+            },
+          ) ??
+          false;
     } on PlatformException {
-      // Ignore unsupported sound mode errors.
-    } catch (_) {
-      // Ignore other sound mode errors.
+      return false;
     }
   }
 }

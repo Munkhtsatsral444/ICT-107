@@ -216,10 +216,10 @@ class NotificationService {
 
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_test_alert_channel_v3',
-        'Meeting Test Alerts',
+        'meeting_reminder_alert_channel_v3',
+        'Meeting Reminder Alerts',
         channelDescription:
-            'Test notifications for Meeting Silent Scheduler',
+            'Audible alerts one minute before meetings',
         importance: Importance.high,
         priority: Priority.high,
         playSound: true,
@@ -230,9 +230,6 @@ class NotificationService {
       ),
       macOS: DarwinNotificationDetails(
         presentSound: true,
-      ),
-      web: WebNotificationDetails(
-        requireInteraction: true,
       ),
     );
 
@@ -327,10 +324,10 @@ class NotificationService {
   }) async {
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'meeting_reminder_alert_channel_v3',
-        'Meeting Reminder Alerts',
+        'meeting_test_alert_channel_v3',
+        'Meeting Test Alerts',
         channelDescription:
-            'Audible alerts one minute before meetings',
+            'Test notifications for Meeting Silent Scheduler',
         importance: Importance.high,
         priority: Priority.high,
         playSound: true,
@@ -341,6 +338,9 @@ class NotificationService {
       ),
       macOS: DarwinNotificationDetails(
         presentSound: true,
+      ),
+      web: WebNotificationDetails(
+        requireInteraction: true,
       ),
     );
 
